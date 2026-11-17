@@ -70,7 +70,7 @@ type TransitConfig mixes Config, Singleton {
    * NewsAPI.org key for keyword news monitoring beyond the keyless Google News RSS feed.
    */
   @value(secret=true)
-  newsApiKey: string = 'VJnDK0b0rzidQ9sro2Qm7Vgdi0iYnXH58SMd0WQ9'
+  newsApiKey: string
 
   /**
    * PennDOT 511PA developer key for official road-closure, construction, and incident events.

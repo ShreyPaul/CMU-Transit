@@ -32,12 +32,18 @@ import { decodePolyline, optionKey, STOP_MIN_ZOOM } from '@/lib/transit';
 import { cn } from '@/lib/utils';
 import ControlPanel, { LayerState } from './ControlPanel';
 import MapSearchCard from './MapSearchCard';
+import RouteTripsPanel from './RouteTripsPanel';
 import StopPanel from './StopPanel';
 import TransitMap, { DrawnPath, MapTarget, TripLegLine } from './TransitMap';
 import TripPlanPanel from './TripPlanPanel';
 import VehiclePanel from './VehiclePanel';
 
-type Selection = { kind: 'vehicle'; id: string } | { kind: 'stop'; id: string } | { kind: 'trip' } | null;
+type Selection =
+  | { kind: 'vehicle'; id: string }
+  | { kind: 'stop'; id: string }
+  | { kind: 'trip' }
+  | { kind: 'routeTrips' }
+  | null;
 
 const DEFAULT_LAYERS: LayerState = { prt: true, cmu: true, outOfService: false, stops: true, cmuPaths: true };
 const FALLBACK_PATH_COLOR = '#6b7280';
@@ -82,6 +88,8 @@ export default function LiveMapPage() {
   const [origin, setOrigin] = useState<TripEndpoint>(CAMPUS_ORIGIN);
   const [destination, setDestination] = useState<TripEndpoint | null>(null);
   const [tripOption, setTripOption] = useState<TripOption | null>(null);
+  /** True when the open vehicle or stop was opened from the route trip list, so Back returns to that list. */
+  const [returnToTrips, setReturnToTrips] = useState(false);
   const knownStops = useRef(new Map<string, TransitStop>());
 
   const tripMode = selection?.kind === 'trip' && destination != null;
@@ -319,6 +327,7 @@ export default function LiveMapPage() {
   const selectVehicle = useCallback(
     (id: string) => {
       setSelection({ kind: 'vehicle', id });
+      setReturnToTrips(false);
       setOptionsOpen(false);
       setShowSelectedRoute(true);
       const v = vehicleById.get(id);
@@ -330,6 +339,7 @@ export default function LiveMapPage() {
   const selectStop = useCallback(
     (id: string) => {
       setSelection({ kind: 'stop', id });
+      setReturnToTrips(false);
       setOptionsOpen(false);
       const cached = knownStops.current.get(id);
       if (cached) {
@@ -431,6 +441,37 @@ export default function LiveMapPage() {
     setFocusedRouteIds((prev) => (prev.includes(routeId) ? prev.filter((id) => id !== routeId) : [...prev, routeId]));
   }, []);
 
+  const showRouteTrips = useCallback(() => {
+    setSelection({ kind: 'routeTrips' });
+    setReturnToTrips(false);
+    setOptionsOpen(false);
+  }, []);
+
+  // Vehicles and stops opened from the trip list come back to it on Back.
+  const selectVehicleFromTrips = useCallback(
+    (id: string) => {
+      selectVehicle(id);
+      setReturnToTrips(true);
+    },
+    [selectVehicle],
+  );
+  const selectStopFromTrips = useCallback(
+    (id: string) => {
+      selectStop(id);
+      setReturnToTrips(true);
+    },
+    [selectStop],
+  );
+
+  // The trip list only makes sense while routes are focused.
+  useEffect(() => {
+    if (focusedRouteIds.length > 0) return;
+    setReturnToTrips(false);
+    setSelection((s) => (s?.kind === 'routeTrips' ? null : s));
+  }, [focusedRouteIds.length]);
+
+  const liveVehicleIds = useMemo(() => new Set(allVehicles.map((v) => v.id)), [allVehicles]);
+
   const searchNear: [number, number] = myLocation ? [myLocation.lat, myLocation.lng] : [origin.latitude, origin.longitude];
 
   const inService = allVehicles.filter((v) => v.inService);
@@ -463,11 +504,20 @@ export default function LiveMapPage() {
       onLayersChange={setLayers}
       onToggleRoute={toggleRoute}
       onClearRoutes={() => setFocusedRouteIds([])}
+      onShowTrips={showRouteTrips}
     />
   );
 
-  const closeSelection = () => setSelection(destination ? { kind: 'trip' } : null);
-  const closeLabel = destination ? 'Back' : undefined;
+  const closeSelection = () => {
+    if (returnToTrips && focusedRouteIds.length > 0) {
+      setReturnToTrips(false);
+      setSelection({ kind: 'routeTrips' });
+      return;
+    }
+    setReturnToTrips(false);
+    setSelection(destination ? { kind: 'trip' } : null);
+  };
+  const closeLabel = destination || (returnToTrips && focusedRouteIds.length > 0) ? 'Back' : undefined;
   const sheetOpen = selection != null || optionsOpen;
 
   return (
@@ -542,8 +592,16 @@ export default function LiveMapPage() {
 
       {selection && (
         <MapSheet
-          key={selection.kind === 'trip' ? 'trip' : `${selection.kind}:${selection.id}`}
-          label={selection.kind === 'vehicle' ? 'Vehicle details' : selection.kind === 'stop' ? 'Stop details' : 'Directions'}
+          key={selection.kind === 'trip' || selection.kind === 'routeTrips' ? selection.kind : `${selection.kind}:${selection.id}`}
+          label={
+            selection.kind === 'vehicle'
+              ? 'Vehicle details'
+              : selection.kind === 'stop'
+                ? 'Stop details'
+                : selection.kind === 'routeTrips'
+                  ? 'Route trips'
+                  : 'Directions'
+          }
           onClose={selection.kind === 'trip' ? closeTrip : closeSelection}
         >
           {selection.kind === 'vehicle' && (
@@ -572,6 +630,18 @@ export default function LiveMapPage() {
               onDirections={onDirectionsToStop}
               onClose={closeSelection}
               closeLabel={closeLabel}
+            />
+          )}
+          {selection.kind === 'routeTrips' && focusedRouteIds.length > 0 && (
+            <RouteTripsPanel
+              routeIds={focusedRouteIds}
+              routes={routes}
+              liveVehicleIds={liveVehicleIds}
+              clockOffsetMs={clockOffsetMs}
+              now={now}
+              onSelectVehicle={selectVehicleFromTrips}
+              onSelectStop={selectStopFromTrips}
+              onClose={closeSelection}
             />
           )}
           {selection.kind === 'trip' && destination && (

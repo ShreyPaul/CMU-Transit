@@ -123,6 +123,17 @@ weather/hills/incidents, AI assistant.
 - A `departAt`/`routeIds` scheduled-trip feature exists in the backend (`TransitFeed.TripPlan.Spec`,
   `TransitServiceCalendar`) and `api/transit.ts#planTrip` accepts both, but the UI does not expose them yet.
 
+## Reverted work (2026-11-17)
+
+- Trip planning was reverted to the last commit after an unfinished multi-modal planner rewrite broke search. The
+  rewrite is saved in `git stash` ("backup before revert: multimodal planner + sidewalk walking routes"): POGOH
+  bikes (`BikeShareFeed`, `PogohStation`), drive/ride-share/transfer option kinds, labels/warnings/cost/CO2, Spec
+  preferences, Valhalla sidewalk-aware walking with `TransitWalkRoute` cache and walk-surface map styling. Recover
+  pieces with `git checkout stash@{0} -- <file>`; do not re-apply wholesale. The route-trips list wiring in
+  `LiveMapPage.tsx` was kept (needed by `ControlPanel`/`RouteTripsPanel`, which are committed).
+- Walking legs use OSRM foot → straight-line estimate (no Valhalla, no surfaces). Never put secret defaults in
+  `TransitConfig.c3typ` (the committed `newsApiKey` default was removed).
+
 ## Key decisions
 
 - Prefer official keyless feeds (GTFS-RT) over keyed APIs; never show data from an unconfigured or failed source.
