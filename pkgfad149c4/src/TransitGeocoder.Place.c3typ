@@ -1,0 +1,35 @@
+/**
+ * One location search result from {@link TransitGeocoder#search}.
+ */
+type TransitGeocoder.Place {
+
+  /**
+   * Primary label, for example a stop or place name.
+   */
+  label: !string
+
+  /**
+   * Secondary text such as the address or the routes serving a stop.
+   */
+  detail: string
+
+  /**
+   * WGS84 latitude.
+   */
+  latitude: !double
+
+  /**
+   * WGS84 longitude.
+   */
+  longitude: !double
+
+  /**
+   * Whether the result is a transit stop or a geocoded place.
+   */
+  kind: !string enum TransitGeocoder.Place.Kind
+
+  /**
+   * {@link TransitStop} id when {@link TransitGeocoder.Place#kind} is STOP.
+   */
+  stopId: string
+}

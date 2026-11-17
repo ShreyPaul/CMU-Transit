@@ -1,0 +1,30 @@
+/**
+ * Result of {@link TransitFeed#stopArrivals}: a stop and its next arrivals.
+ */
+type TransitFeed.StopArrivals {
+
+  /**
+   * The stop.
+   */
+  stop: !TransitStop
+
+  /**
+   * Upcoming arrivals, soonest first.
+   */
+  arrivals: [TransitFeed.Arrival]
+
+  /**
+   * Feed the predictions were read from.
+   */
+  predictionSource: string
+
+  /**
+   * Explanation when no arrivals are available.
+   */
+  note: string
+
+  /**
+   * Time the predictions were read.
+   */
+  fetchedAt: !datetime
+}

@@ -1,0 +1,37 @@
+/**
+ * Result of {@link TransitFeed#vehicleDetail}: a vehicle and its upcoming stops.
+ */
+type TransitFeed.VehicleDetail {
+
+  /**
+   * The vehicle as last stored by {@link TransitFeed#refreshLive}.
+   */
+  vehicle: !TransitVehicle
+
+  /**
+   * Path the vehicle's current trip follows, with its ordered {@link TransitRoute.Path#stopSequence}. Unset when the
+   * vehicle is not in service or its trip's geometry is not loaded.
+   */
+  path: TransitRoute.Path
+
+  /**
+   * Next stops on the current trip with predicted arrival times, soonest first.
+   */
+  upcomingStops: [TransitFeed.StopEta]
+
+  /**
+   * Feed the predictions were read from, for example `PRT GTFS-Realtime trip updates`.
+   */
+  predictionSource: string
+
+  /**
+   * Explanation when no predictions are available, for example because the vehicle is not in service.
+   */
+  @db(length=2000)
+  note: string
+
+  /**
+   * Time the predictions were read.
+   */
+  fetchedAt: !datetime
+}

@@ -1,0 +1,13 @@
+/**
+ * Source of a {@link TransitGeocoder.Place}.
+ */
+enum type TransitGeocoder.Place.Kind {
+  /**
+   * A loaded PRT or CMU shuttle stop.
+   */
+  STOP
+  /**
+   * A place or address geocoded by Photon.
+   */
+  PLACE
+}

@@ -1,0 +1,41 @@
+/**
+ * What kind of information a {@link TransitDataSource} supplies.
+ */
+enum type TransitDataSource.Category {
+  /**
+   * Live vehicle positions, arrival predictions, or service alerts.
+   */
+  TRANSIT_REALTIME
+  /**
+   * Scheduled network data: routes, stops, trips, and route geometry.
+   */
+  TRANSIT_STATIC
+  /**
+   * Current conditions and forecasts, including snow, ice, and freezing temperatures.
+   */
+  WEATHER
+  /**
+   * Terrain elevation used to find steep walking segments.
+   */
+  ELEVATION
+  /**
+   * Walking, driving, or transit directions and travel-time estimates.
+   */
+  ROUTING
+  /**
+   * Turning a typed place name or address into coordinates.
+   */
+  GEOCODING
+  /**
+   * Local news monitored for closures, accidents, and disruptions.
+   */
+  NEWS
+  /**
+   * Official traffic incidents, construction, and road closures.
+   */
+  TRAFFIC
+  /**
+   * Base map tiles and map rendering.
+   */
+  MAPS
+}

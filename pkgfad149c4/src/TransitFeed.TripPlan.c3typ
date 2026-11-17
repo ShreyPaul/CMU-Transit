@@ -1,0 +1,31 @@
+/**
+ * Result of {@link TransitFeed#planTrip}: travel options between two points, soonest arrival first.
+ */
+type TransitFeed.TripPlan {
+
+  /**
+   * Walking-only, PRT, and CMU shuttle options, soonest arrival first.
+   */
+  options: [TransitFeed.TripPlan.Option]
+
+  /**
+   * Caveats that apply to the whole plan, for example routes with no departure predicted in the next 3 hours.
+   */
+  notes: [string]
+
+  /**
+   * Time the plan was computed.
+   */
+  plannedAt: !datetime
+
+  /**
+   * Earliest departure the plan used: {@link TransitFeed.TripPlan.Spec#departAt}, or now.
+   */
+  departAt: !datetime
+
+  /**
+   * Every route with a stop near both ends, whether or not it is in {@link TransitFeed.TripPlan.Spec#routeIds}, so the
+   * caller can offer them as choices.
+   */
+  servingRoutes: [TransitRoute]
+}

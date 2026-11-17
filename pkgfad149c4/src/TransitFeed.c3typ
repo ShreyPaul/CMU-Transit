@@ -1,0 +1,62 @@
+/**
+ * Integration service that pulls PRT (GTFS / GTFS-Realtime) and CMU TripShot feeds, normalizes them into
+ * {@link TransitRoute}, {@link TransitStop}, {@link TransitVehicle}, and {@link TransitServiceAlert}, and records each
+ * pull on its {@link TransitDataSource}.
+ */
+type TransitFeed {
+
+  /**
+   * Returns current vehicle positions for both operators. Pulls the upstream feeds only when the cached rows are older
+   * than {@link TransitConfig#vehicleRefreshSeconds} (or when `force` is true), so many clients can poll it safely.
+   */
+  refreshLive: function(force: boolean): !TransitFeed.LiveSnapshot js-server
+
+  /**
+   * Returns active service alerts, pulling the PRT alert feed when the cached rows are older than
+   * {@link TransitConfig#alertRefreshSeconds} or when `force` is true.
+   */
+  refreshAlerts: function(force: boolean): [TransitServiceAlert] js-server
+
+  /**
+   * Returns one vehicle with its upcoming stops and operator-predicted arrival times, read live from the PRT
+   * trip-update feed or the TripShot ride status.
+   */
+  vehicleDetail: function(vehicleId: !string): !TransitFeed.VehicleDetail js-server
+
+  /**
+   * Returns the next arrivals at one stop from live operator predictions, soonest first.
+   */
+  stopArrivals: function(stopId: !string): !TransitFeed.StopArrivals js-server
+
+  /**
+   * Plans a trip between two points leaving at {@link TransitFeed.TripPlan.Spec#departAt} (default now). Returns a
+   * walking-only option plus PRT and CMU shuttle options (one ride with a walk at each end), timed from live
+   * predictions where available and the published timetable otherwise, with the service alerts on each route.
+   */
+  planTrip: function(spec: !TransitFeed.TripPlan.Spec): !TransitFeed.TripPlan js-server
+
+  /**
+   * Returns every trip of the given routes (at most 10 {@link TransitRoute} ids) that is running now or leaves its
+   * first stop within `horizonMinutes` (default 180, at most 360). PRT trips come from the GTFS timetable, with live
+   * predictions and the vehicle overlaid for tracked trips; CMU shuttle trips are the loops of today's TripShot rides.
+   */
+  routeTrips: function(routeIds: ![string], horizonMinutes: int): !TransitFeed.RouteTrips js-server
+
+  /**
+   * Returns one trip from {@link TransitFeed#routeTrips} with its time at every stop. `serviceDate` is the trip's
+   * {@link TransitFeed.RouteTrip#serviceDate}; it is needed for PRT trips and ignored for CMU shuttle trips.
+   */
+  tripTimetable: function(routeId: !string, tripId: !string, serviceDate: string): !TransitFeed.TripTimetable js-server
+
+  /**
+   * Loads CMU shuttle routes, stops, and route geometry from TripShot. Run after deployment and when the shuttle
+   * network changes.
+   */
+  loadTripShotNetwork: function(): !TransitFeed.LoadResult js-server
+
+  /**
+   * Loads PRT routes, stops (with the routes serving them), trips, and simplified route geometry from the PRT static
+   * GTFS zip. Run after deployment and after each PRT service change.
+   */
+  loadPrtNetwork: function(): !TransitFeed.LoadResult py
+}

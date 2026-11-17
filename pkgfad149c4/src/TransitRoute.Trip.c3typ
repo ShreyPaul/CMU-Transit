@@ -1,0 +1,44 @@
+/**
+ * A scheduled PRT GTFS trip, kept so live vehicles and predictions can show their destination (headsign).
+ * The id is `PRT:<trip_id>`.
+ */
+@db(index=['route', 'shapeId'])
+entity type TransitRoute.Trip {
+
+  /**
+   * Route the trip runs on.
+   */
+  route: !TransitRoute
+
+  /**
+   * Destination sign text, for example `INBOUND-DOWNTOWN`.
+   */
+  @db(length=1000)
+  headsign: string
+
+  /**
+   * GTFS `direction_id` (0 or 1).
+   */
+  directionId: int
+
+  /**
+   * GTFS `shape_id` the trip follows.
+   */
+  shapeId: string
+
+  /**
+   * {@link TransitServiceCalendar} id (`PRT:<service_id>`) that says which days the trip runs.
+   */
+  serviceId: string
+
+  /**
+   * Scheduled departure from the trip's first stop, in seconds after midnight of the service day (may exceed 86400
+   * for trips that run past midnight).
+   */
+  startSeconds: int
+
+  /**
+   * Scheduled arrival at the trip's last stop, in seconds after midnight of the service day.
+   */
+  endSeconds: int
+}

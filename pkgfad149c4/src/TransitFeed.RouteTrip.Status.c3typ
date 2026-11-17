@@ -1,0 +1,14 @@
+/**
+ * Where a {@link TransitFeed.RouteTrip} is relative to the current time.
+ */
+enum type TransitFeed.RouteTrip.Status {
+  /**
+   * The trip has left its first stop and has not reached its last stop (by live tracking or, without it, by the
+   * timetable).
+   */
+  RUNNING
+  /**
+   * The trip has not left its first stop yet.
+   */
+  UPCOMING
+}

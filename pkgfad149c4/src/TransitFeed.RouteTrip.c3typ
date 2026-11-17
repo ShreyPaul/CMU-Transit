@@ -1,0 +1,113 @@
+/**
+ * One trip of a route in the {@link TransitFeed#routeTrips} window: a PRT GTFS trip, or one loop of a CMU TripShot
+ * ride. Times are live predictions when {@link TransitFeed.RouteTrip#isRealtime} is true and timetable times otherwise.
+ */
+type TransitFeed.RouteTrip {
+
+  /**
+   * Operator that runs the trip.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * {@link TransitRoute} id, for example `PRT:71B`.
+   */
+  routeId: !string
+
+  /**
+   * Rider-facing route code, for example `71B`.
+   */
+  routeCode: string
+
+  /**
+   * Route color as `#rrggbb`.
+   */
+  routeColor: string
+
+  /**
+   * Operator trip id: the GTFS `trip_id` for PRT, or `<TripShot rideId>#<loop number>` for CMU shuttles. Pass it to
+   * {@link TransitFeed#tripTimetable} for the stop-by-stop times.
+   */
+  @db(length=1000)
+  tripId: !string
+
+  /**
+   * Service day the trip belongs to as `YYYY-MM-DD` (America/New_York). PRT trips after midnight belong to the
+   * previous day.
+   */
+  serviceDate: string
+
+  /**
+   * Destination sign, for example `Inbound-Downtown`.
+   */
+  @db(length=1000)
+  headsign: string
+
+  /**
+   * Direction label, for example `Inbound`, `Outbound`, or `Loop` for shuttle loops.
+   */
+  directionName: string
+
+  /**
+   * Running or upcoming, see {@link TransitFeed.RouteTrip.Status}.
+   */
+  status: !string enum TransitFeed.RouteTrip.Status
+
+  /**
+   * Time the trip leaves its first stop.
+   */
+  startAt: !datetime
+
+  /**
+   * Time the trip reaches its last stop.
+   */
+  endAt: !datetime
+
+  /**
+   * Name of the first stop.
+   */
+  @db(length=1000)
+  firstStopName: string
+
+  /**
+   * Name of the last stop.
+   */
+  @db(length=1000)
+  lastStopName: string
+
+  /**
+   * Number of stops the trip serves.
+   */
+  stopCount: int
+
+  /**
+   * True when a tracked vehicle is on (or assigned to) this trip and its times are live predictions.
+   */
+  isRealtime: boolean
+
+  /**
+   * {@link TransitVehicle} id of the vehicle running the trip, when the operator reports one.
+   */
+  vehicleId: string
+
+  /**
+   * Fleet number or shuttle name of that vehicle, for example `6352` or `E7`.
+   */
+  vehicleLabel: string
+
+  /**
+   * Seconds behind the timetable (positive is late), when the trip is tracked live.
+   */
+  delaySeconds: int
+
+  /**
+   * Next stop a running trip will reach.
+   */
+  @db(length=1000)
+  nextStopName: string
+
+  /**
+   * Predicted or scheduled time at {@link TransitFeed.RouteTrip#nextStopName}.
+   */
+  nextStopAt: datetime
+}

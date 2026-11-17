@@ -1,0 +1,31 @@
+/**
+ * Result of {@link TransitFeed#routeTrips}: every trip of the requested routes that is running now or starts within
+ * the window, soonest first.
+ */
+type TransitFeed.RouteTrips {
+
+  /**
+   * Running and upcoming trips, ordered by {@link TransitFeed.RouteTrip#startAt}.
+   */
+  trips: [TransitFeed.RouteTrip]
+
+  /**
+   * Start of the window (the time of the call).
+   */
+  windowStart: !datetime
+
+  /**
+   * End of the window: trips starting after this are left out.
+   */
+  windowEnd: !datetime
+
+  /**
+   * Plain-language notes, for example a route with no service in the window or a feed that could not be read.
+   */
+  notes: [string]
+
+  /**
+   * Time the live feeds were read.
+   */
+  fetchedAt: !datetime
+}

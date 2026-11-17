@@ -1,0 +1,14 @@
+/**
+ * Location search for the map: suggests exact street addresses from the Allegheny County address points, places and
+ * streets from Photon (OpenStreetMap data), and matching {@link TransitStop} names, all usable as-you-type.
+ */
+type TransitGeocoder {
+
+  /**
+   * Returns up to `limit` suggestions for a partial `query`: county street addresses (when the query starts with a
+   * house number), then places in the Pittsburgh area ranked toward `nearLatitude`/`nearLongitude`, then matching
+   * transit stops. Built for autocomplete: call it as the user types (debounced), with at least three characters.
+   * Throws only when every source fails and nothing matched.
+   */
+  search: function(query: !string, limit: int, nearLatitude: double, nearLongitude: double): [TransitGeocoder.Place] js-server
+}

@@ -1,0 +1,45 @@
+/**
+ * The drawn geometry of one direction or variant of a {@link TransitRoute}, derived from GTFS shapes (PRT) or
+ * TripShot ride vias (CMU).
+ */
+@db(index=['route'])
+entity type TransitRoute.Path {
+
+  /**
+   * Route this geometry belongs to.
+   */
+  route: !TransitRoute
+
+  /**
+   * Direction label such as `Inbound`, `Outbound`, or `0` / `1` from GTFS.
+   */
+  directionName: string
+
+  /**
+   * Destination sign shown for trips that follow this path.
+   */
+  @db(length=1000)
+  headsign: string
+
+  /**
+   * Path coordinates in Google encoded-polyline format (precision 5), simplified to about 5 m tolerance.
+   */
+  @db(length=-1)
+  encodedPolyline: !string
+
+  /**
+   * Number of coordinates in {@link TransitRoute.Path#encodedPolyline}.
+   */
+  pointCount: int
+
+  /**
+   * {@link TransitStop} ids served along this path, in travel order (from a representative scheduled trip).
+   */
+  stopSequence: [string]
+
+  /**
+   * Scheduled seconds from the first stop to each stop in {@link TransitRoute.Path#stopSequence}, same order and
+   * length. Used to estimate ride time when the operator publishes no live prediction.
+   */
+  stopOffsetsSec: [int]
+}

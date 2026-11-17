@@ -1,0 +1,21 @@
+/**
+ * Health of a {@link TransitDataSource} as of its most recent call.
+ */
+enum type TransitDataSource.Status {
+  /**
+   * The last call succeeded.
+   */
+  OK
+  /**
+   * The last call failed; see {@link TransitDataSource#lastError}.
+   */
+  ERROR
+  /**
+   * The source needs a credential in {@link TransitConfig} that has not been set, so it is never called.
+   */
+  NOT_CONFIGURED
+  /**
+   * The source has not been called since the application was deployed.
+   */
+  NOT_CHECKED
+}

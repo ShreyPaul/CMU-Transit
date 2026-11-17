@@ -1,0 +1,52 @@
+/**
+ * One stop of a trip in a {@link TransitFeed.TripTimetable}, with its timetable time and, when tracked, its live time.
+ */
+type TransitFeed.TripTimetable.Stop {
+
+  /**
+   * {@link TransitStop} id, when the stop is in the loaded network.
+   */
+  stopId: string
+
+  /**
+   * Stop name.
+   */
+  @db(length=1000)
+  stopName: !string
+
+  /**
+   * Stop latitude, when known.
+   */
+  latitude: double
+
+  /**
+   * Stop longitude, when known.
+   */
+  longitude: double
+
+  /**
+   * Timetable time at the stop.
+   */
+  scheduledAt: datetime
+
+  /**
+   * Best known time at the stop: the actual time for stops already served, the live prediction for upcoming stops on
+   * a tracked trip, otherwise the timetable time.
+   */
+  expectedAt: datetime
+
+  /**
+   * True when {@link TransitFeed.TripTimetable.Stop#expectedAt} comes from live tracking rather than the timetable.
+   */
+  isRealtime: boolean
+
+  /**
+   * True when the vehicle has already served (or passed) the stop.
+   */
+  passed: boolean
+
+  /**
+   * True when the operator reports the stop will be or was skipped.
+   */
+  skipped: boolean
+}

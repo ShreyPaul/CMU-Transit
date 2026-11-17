@@ -1,0 +1,42 @@
+/**
+ * A PRT bus/rail stop or a CMU shuttle stop. The id is `PRT:<stop_id>` or `CMU:<TripShot stopId>`.
+ */
+@db(index=['provider', 'latitude', 'longitude'])
+entity type TransitStop {
+
+  /**
+   * Operator that serves the stop.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * Rider-facing stop number (PRT `stop_code`, TripShot `gtfsId`).
+   */
+  stopCode: string
+
+  /**
+   * Stop name, for example `FORBES AVE + MOREWOOD AVE` or `Morewood Gardens Turn-around`.
+   */
+  @db(length=1000)
+  stopName: !string
+
+  /**
+   * WGS84 latitude.
+   */
+  latitude: !double
+
+  /**
+   * WGS84 longitude.
+   */
+  longitude: !double
+
+  /**
+   * The operator's own stop identifier (GTFS `stop_id` or TripShot `stopId`).
+   */
+  externalId: !string
+
+  /**
+   * Route codes that serve this stop according to the operator schedule.
+   */
+  servedRouteCodes: [string]
+}

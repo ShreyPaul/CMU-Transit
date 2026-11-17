@@ -1,0 +1,80 @@
+/**
+ * Endpoints, refresh cadence, and optional API credentials for the external feeds that {@link TransitFeed},
+ * {@link TransitGeocoder}, and {@link TransitDataSource#checkAll} call. Keyless public feeds work with the defaults;
+ * keyed providers stay NOT_CONFIGURED until an admin sets the matching secret.
+ */
+type TransitConfig mixes Config, Singleton {
+
+  /**
+   * Base URL of the PRT TrueTime server that hosts the GTFS-Realtime vehicle, trip-update, and alert feeds.
+   */
+  prtRealtimeBaseUrl: string = 'https://truetime.rideprt.org'
+
+  /**
+   * URL of the PRT static GTFS zip (routes, stops, trips, shapes) read by {@link TransitFeed#loadPrtNetwork}.
+   */
+  prtGtfsStaticUrl: string = 'https://www.rideprt.org/developerresources/GTFS.zip'
+
+  /**
+   * Base URL of the CMU TripShot tenant whose public `/v1/p/*` endpoints supply shuttle routes and live status.
+   */
+  tripShotBaseUrl: string = 'https://cmu.tripshot.com'
+
+  /**
+   * Base URL of the Photon geocoder (OpenStreetMap data, built for search-as-you-type) used by
+   * {@link TransitGeocoder#search}.
+   */
+  geocoderBaseUrl: string = 'https://photon.komoot.io'
+
+  /**
+   * ArcGIS layer URL of the Allegheny County address points, used by {@link TransitGeocoder#search} to suggest exact
+   * street addresses.
+   */
+  countyAddressBaseUrl: string = 'https://gisdata.alleghenycounty.us/arcgis/rest/services/Addressing/Addressing_AddressPoints/MapServer/0'
+
+  /**
+   * Base URL of the OSRM foot-profile router used for walking legs in {@link TransitFeed#planTrip}.
+   */
+  walkRouterBaseUrl: string = 'https://routing.openstreetmap.de/routed-foot'
+
+  /**
+   * Minimum seconds between two upstream pulls of the live vehicle feeds. Callers polling faster get the cached
+   * {@link TransitVehicle} rows, which keeps the app inside operator fair-use limits.
+   */
+  vehicleRefreshSeconds: int = 15
+
+  /**
+   * Minimum seconds between two upstream pulls of the PRT service-alert feed.
+   */
+  alertRefreshSeconds: int = 120
+
+  /**
+   * User-Agent header sent on every outbound request, so operators can identify this application.
+   */
+  userAgent: string = 'CMU-Unified-Transit/1.0 (C3 AI application)'
+
+  /**
+   * PRT TrueTime Bus Time API key. Optional: GTFS-Realtime needs no key; TrueTime adds richer predictions.
+   */
+  @value(secret=true)
+  prtTrueTimeApiKey: string
+
+  /**
+   * Google Maps Platform API key for the Routes API (walking, transit, and traffic-aware routing). Restrict it to the
+   * Routes API in Google Cloud Console; legacy Directions and Distance Matrix calls are rejected with REQUEST_DENIED.
+   */
+  @value(secret=true)
+  googleMapsApiKey: string
+
+  /**
+   * NewsAPI.org key for keyword news monitoring beyond the keyless Google News RSS feed.
+   */
+  @value(secret=true)
+  newsApiKey: string = 'VJnDK0b0rzidQ9sro2Qm7Vgdi0iYnXH58SMd0WQ9'
+
+  /**
+   * PennDOT 511PA developer key for official road-closure, construction, and incident events.
+   */
+  @value(secret=true)
+  pa511ApiKey: string
+}
