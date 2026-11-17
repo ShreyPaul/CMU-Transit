@@ -1,0 +1,126 @@
+/**
+ * One leg of a {@link TransitFeed.TripPlan.Option}: a walk or a single ride.
+ */
+type TransitFeed.TripPlan.Leg {
+
+  /**
+   * How the leg is traveled.
+   */
+  mode: !string enum TransitFeed.TripPlan.Leg.Mode
+
+  /**
+   * Where the leg starts, for example `Start` or a stop name.
+   */
+  fromName: string
+
+  /**
+   * Where the leg ends.
+   */
+  toName: string
+
+  /**
+   * Start latitude.
+   */
+  fromLatitude: double
+
+  /**
+   * Start longitude.
+   */
+  fromLongitude: double
+
+  /**
+   * End latitude.
+   */
+  toLatitude: double
+
+  /**
+   * End longitude.
+   */
+  toLongitude: double
+
+  /**
+   * When the leg starts (boarding time for a ride).
+   */
+  departAt: datetime
+
+  /**
+   * When the leg ends (alighting time for a ride).
+   */
+  arriveAt: datetime
+
+  /**
+   * Seconds the leg takes.
+   */
+  durationSeconds: int
+
+  /**
+   * Meters covered.
+   */
+  distanceMeters: int
+
+  /**
+   * Route ridden (ride legs only).
+   */
+  route: TransitRoute
+
+  /**
+   * Rider-facing route code (ride legs only).
+   */
+  routeCode: string
+
+  /**
+   * Route color as `#rrggbb` (ride legs only).
+   */
+  routeColor: string
+
+  /**
+   * Destination sign of the vehicle to board (ride legs only).
+   */
+  headsign: string
+
+  /**
+   * Stop to board at (ride legs only).
+   */
+  boardStop: TransitStop
+
+  /**
+   * Stop to get off at (ride legs only).
+   */
+  alightStop: TransitStop
+
+  /**
+   * Stops ridden, counting the alighting stop (ride legs only).
+   */
+  stopCount: int
+
+  /**
+   * Operator trip (PRT `trip_id`) or ride (TripShot `rideId`) to board (ride legs only).
+   */
+  tripId: string
+
+  /**
+   * Fleet number or shuttle name of the predicted vehicle, when the operator has assigned one.
+   */
+  vehicleLabel: string
+
+  /**
+   * True when the times come from live vehicle tracking; false when they are the published schedule.
+   */
+  isRealtime: boolean
+
+  /**
+   * True when the boarding time is a live prediction but the arrival is the scheduled ride time added to it, because
+   * the operator predicts only the next stops of each trip.
+   */
+  isArrivalScheduled: boolean
+
+  /**
+   * True when a walking leg's time and line are a straight-line estimate because the walking router was unavailable.
+   */
+  isEstimated: boolean
+
+  /**
+   * Leg geometry in Google encoded-polyline format (walking path, or the ridden part of the route).
+   */
+  encodedPolyline: string
+}

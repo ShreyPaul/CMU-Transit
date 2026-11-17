@@ -1,0 +1,37 @@
+/**
+ * What to plan in {@link TransitFeed#planTrip}: the two ends, when to leave, and optionally which routes to ride.
+ */
+type TransitFeed.TripPlan.Spec {
+
+  /**
+   * Start latitude.
+   */
+  fromLatitude: !double
+
+  /**
+   * Start longitude.
+   */
+  fromLongitude: !double
+
+  /**
+   * Destination latitude.
+   */
+  toLatitude: !double
+
+  /**
+   * Destination longitude.
+   */
+  toLongitude: !double
+
+  /**
+   * Earliest time to leave. Unset (or in the past) means now. Departures within PRT's prediction window use live
+   * predictions; later ones come from the published timetable.
+   */
+  departAt: datetime
+
+  /**
+   * {@link TransitRoute} ids to ride. When set, only these routes are planned and each gets its next few departures;
+   * when unset, the best departure of every route serving both ends is compared.
+   */
+  routeIds: [string]
+}

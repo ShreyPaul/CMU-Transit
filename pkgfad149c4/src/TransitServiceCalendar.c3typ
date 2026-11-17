@@ -1,0 +1,36 @@
+/**
+ * Which days a set of scheduled trips runs (GTFS `calendar.txt` plus `calendar_dates.txt` exceptions), used to find
+ * timetable departures for a future {@link TransitFeed.TripPlan.Spec#departAt}. The id is `PRT:<service_id>`.
+ */
+entity type TransitServiceCalendar {
+
+  /**
+   * Operator whose timetable this is.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * ISO weekdays the service runs (1 = Monday ... 7 = Sunday).
+   */
+  weekdays: [int]
+
+  /**
+   * First service date.
+   */
+  startDate: date
+
+  /**
+   * Last service date.
+   */
+  endDate: date
+
+  /**
+   * Extra dates the service runs (GTFS exception type 1).
+   */
+  addedDates: [date]
+
+  /**
+   * Dates the service does not run (GTFS exception type 2).
+   */
+  removedDates: [date]
+}

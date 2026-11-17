@@ -1,0 +1,164 @@
+/*
+ * CMU Transit app theme: a calm pastel palette (light blue, lavender, mint, peach, warm off-white) layered on top of
+ * the C3 design tokens. Every text/background pair below meets WCAG AA (4.5:1) in both light and dark mode.
+ *
+ * Use the Tailwind utilities generated from the @theme block: bg-canvas, bg-surface, text-ink, text-ink-soft,
+ * border-line, bg-brand, text-on-brand, bg-tint-sky + text-tint-sky-ink (and lavender / mint / peach / rose),
+ * rounded-card, rounded-control, shadow-soft, shadow-float.
+ */
+
+:root {
+  --app-canvas: #fbf8f3; /* warm off-white page */
+  --app-surface: #ffffff;
+  --app-surface-2: #f5f1ea;
+  --app-ink: #1f2430; /* 15:1 on canvas */
+  --app-ink-soft: #575e6b; /* 6.1:1 on canvas */
+  --app-line: #e6e0d6;
+  --app-line-strong: #cfc7ba;
+  --app-field: #857e72; /* form-control border, 4:1 on surface */
+
+  --app-brand: #2f6aa3; /* white text 5.5:1 */
+  --app-brand-strong: #255887;
+  --app-on-brand: #ffffff;
+  --app-focus: #2f6aa3;
+
+  --app-sky: #e4f0fb;
+  --app-sky-ink: #1e4e7e;
+  --app-lavender: #eee9fb;
+  --app-lavender-ink: #4a3a8c;
+  --app-mint: #e2f5eb;
+  --app-mint-ink: #1d6544;
+  --app-peach: #fdebdd;
+  --app-peach-ink: #8a4513;
+  --app-rose: #fce6e6;
+  --app-rose-ink: #9b1c1c;
+
+  --app-shadow-soft: 0 1px 2px rgb(31 36 48 / 4%), 0 4px 14px rgb(31 36 48 / 6%);
+  --app-shadow-float: 0 2px 6px rgb(31 36 48 / 8%), 0 10px 28px rgb(31 36 48 / 14%);
+  --app-scrim: rgb(31 36 48 / 28%);
+}
+
+.dark {
+  --app-canvas: #12141a;
+  --app-surface: #1b1e26;
+  --app-surface-2: #242833;
+  --app-ink: #eef0f4;
+  --app-ink-soft: #b0b6c2;
+  --app-line: #2f3441;
+  --app-line-strong: #454b5a;
+  --app-field: #757c8c;
+
+  --app-brand: #9cc3ee;
+  --app-brand-strong: #b9d5f3;
+  --app-on-brand: #0d2136;
+  --app-focus: #9cc3ee;
+
+  --app-sky: #1d2b3b;
+  --app-sky-ink: #b5d3f3;
+  --app-lavender: #282340;
+  --app-lavender-ink: #cfc4f7;
+  --app-mint: #19312a;
+  --app-mint-ink: #a6e0c3;
+  --app-peach: #3a2a1f;
+  --app-peach-ink: #f6c9a6;
+  --app-rose: #3b2024;
+  --app-rose-ink: #f6b8b8;
+
+  --app-shadow-soft: 0 1px 2px rgb(0 0 0 / 30%), 0 4px 14px rgb(0 0 0 / 25%);
+  --app-shadow-float: 0 2px 6px rgb(0 0 0 / 35%), 0 10px 28px rgb(0 0 0 / 40%);
+  --app-scrim: rgb(0 0 0 / 45%);
+}
+
+@theme inline {
+  --color-canvas: var(--app-canvas);
+  --color-surface: var(--app-surface);
+  --color-surface-2: var(--app-surface-2);
+  --color-ink: var(--app-ink);
+  --color-ink-soft: var(--app-ink-soft);
+  --color-line: var(--app-line);
+  --color-line-strong: var(--app-line-strong);
+  --color-field: var(--app-field);
+  --color-brand: var(--app-brand);
+  --color-brand-strong: var(--app-brand-strong);
+  --color-on-brand: var(--app-on-brand);
+  --color-focus: var(--app-focus);
+  --color-tint-sky: var(--app-sky);
+  --color-tint-sky-ink: var(--app-sky-ink);
+  --color-tint-lavender: var(--app-lavender);
+  --color-tint-lavender-ink: var(--app-lavender-ink);
+  --color-tint-mint: var(--app-mint);
+  --color-tint-mint-ink: var(--app-mint-ink);
+  --color-tint-peach: var(--app-peach);
+  --color-tint-peach-ink: var(--app-peach-ink);
+  --color-tint-rose: var(--app-rose);
+  --color-tint-rose-ink: var(--app-rose-ink);
+  --color-scrim: var(--app-scrim);
+
+  --radius-card: 1.25rem;
+  --radius-control: 0.875rem;
+  --radius-sheet: 1.5rem;
+
+  --shadow-soft: var(--app-shadow-soft);
+  --shadow-float: var(--app-shadow-float);
+}
+
+@layer base {
+  /* rem-based 16px body text so browser text-size settings scale the whole UI. */
+  body {
+    font-size: 1rem;
+    line-height: 1.5;
+    background: var(--app-canvas);
+    color: var(--app-ink);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* One visible, high-contrast focus ring for every keyboard-focusable element (utilities can still override it). */
+  :where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+    outline: 3px solid var(--app-focus);
+    outline-offset: 2px;
+  }
+}
+
+
+/* Subtle, fast entrance for sheets and panels (150 ms). */
+@keyframes app-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.app-rise {
+  animation: app-rise 150ms ease-out both;
+}
+
+@keyframes app-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.app-live-dot {
+  animation: app-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-rise,
+  .app-live-dot {
+    animation: none;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
+}

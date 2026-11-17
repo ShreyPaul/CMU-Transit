@@ -1,0 +1,116 @@
+/**
+ * The latest known position of one PRT bus/train or CMU shuttle, written by {@link TransitFeed#refreshLive}.
+ * One row per vehicle; rows for vehicles that drop out of the operator feed are removed on the next refresh.
+ */
+@db(index=['provider'])
+entity type TransitVehicle {
+
+  /**
+   * Operator that runs the vehicle.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * Fleet number painted on the vehicle (PRT) or shuttle name (TripShot), for example `6352` or `E7`.
+   */
+  vehicleLabel: !string
+
+  /**
+   * True when the vehicle is assigned to a trip or ride; false when it is deadheading, parked, or off duty.
+   */
+  inService: boolean
+
+  /**
+   * Route the vehicle is running, when in service.
+   */
+  route: TransitRoute
+
+  /**
+   * Rider-facing route code, copied from {@link TransitVehicle#route} for display.
+   */
+  routeCode: string
+
+  /**
+   * Route long name, copied from {@link TransitVehicle#route} for display.
+   */
+  @db(length=1000)
+  routeName: string
+
+  /**
+   * Route color as `#rrggbb`, copied from {@link TransitVehicle#route}.
+   */
+  routeColor: string
+
+  /**
+   * Destination sign (PRT trip headsign) or final stop of the shuttle ride.
+   */
+  @db(length=1000)
+  destination: string
+
+  /**
+   * Direction label from the operator, for example `Outbound`.
+   */
+  directionName: string
+
+  /**
+   * Operator trip (PRT `trip_id`) or ride (TripShot `rideId`) the vehicle is serving.
+   */
+  @db(length=1000)
+  tripId: string
+
+  /**
+   * WGS84 latitude of the last GPS fix.
+   */
+  latitude: !double
+
+  /**
+   * WGS84 longitude of the last GPS fix.
+   */
+  longitude: !double
+
+  /**
+   * Heading in degrees clockwise from north, when the operator reports it.
+   */
+  bearing: double
+
+  /**
+   * Speed in meters per second, when the operator reports it.
+   */
+  speedMps: double
+
+  /**
+   * Time of the GPS fix as reported by the operator. Compare with {@link TransitVehicle#fetchedAt} to judge staleness.
+   */
+  reportedAt: datetime
+
+  /**
+   * Time this application pulled the operator feed that produced the row.
+   */
+  fetchedAt: !datetime
+
+  /**
+   * Seconds behind schedule reported by TripShot; positive means late. Unset when the operator does not report it.
+   */
+  delaySeconds: int
+
+  /**
+   * Next stop the shuttle is heading to (TripShot only; PRT next stops come from {@link TransitFeed#vehicleDetail}).
+   */
+  @db(length=1000)
+  nextStopName: string
+
+  /**
+   * Operator-predicted arrival time at {@link TransitVehicle#nextStopName}.
+   */
+  nextStopEta: datetime
+
+  /**
+   * Riders who have boarded during the current TripShot ride (cumulative, not the current on-board load).
+   */
+  riderCount: int
+
+  /**
+   * Seated capacity reported by TripShot.
+   */
+  capacity: int
+}

@@ -1,0 +1,17 @@
+/**
+ * Main travel mode of a {@link TransitFeed.TripPlan.Option}.
+ */
+enum type TransitFeed.TripPlan.Option.Kind {
+  /**
+   * Walk the whole way.
+   */
+  WALK
+  /**
+   * Walk, ride one PRT bus or train, walk.
+   */
+  PRT
+  /**
+   * Walk, ride one CMU shuttle, walk.
+   */
+  CMU_SHUTTLE
+}

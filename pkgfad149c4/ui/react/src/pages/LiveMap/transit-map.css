@@ -1,0 +1,328 @@
+/*
+ * Live map markers. Leaflet renders markers as raw HTML/SVG outside React, so they are styled here with C3 tokens.
+ * PRT buses are blue rounded pills with the route number, PRT light rail is indigo, and CMU shuttles are red circles.
+ */
+
+.tv-vehicle {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font: 700 11px/1 'Inter Variable', Inter, system-ui, sans-serif;
+  letter-spacing: -0.01em;
+  color: var(--c3-style-basic-fg-inverse);
+  border: 2px solid var(--c3-style-basic-bg-primary);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+/* Invisible padding so small markers still give a ~44px tap target. */
+.tv-vehicle::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 9999px;
+}
+
+.tv-vehicle:hover {
+  transform: scale(1.12);
+}
+
+.leaflet-marker-icon:focus-visible {
+  outline: none;
+}
+
+.leaflet-marker-icon:focus-visible .tv-vehicle,
+.leaflet-marker-icon:focus-visible .tv-pin {
+  box-shadow:
+    0 0 0 3px var(--app-surface),
+    0 0 0 6px var(--app-focus);
+}
+
+.tv-prt {
+  border-radius: 6px;
+  background: var(--c3-style-basic-bg-accent-inverse);
+}
+
+.tv-rail {
+  border-radius: 3px;
+  background: var(--c3-style-deco-indigo-bg-strong);
+}
+
+.tv-cmu {
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-danger-inverse);
+}
+
+.tv-prt .tv-heading::before,
+.tv-rail .tv-heading::before {
+  border-bottom-color: var(--c3-style-basic-bg-accent-inverse);
+}
+
+.tv-rail .tv-heading::before {
+  border-bottom-color: var(--c3-style-deco-indigo-bg-strong);
+}
+
+.tv-cmu .tv-heading::before {
+  border-bottom-color: var(--c3-style-basic-bg-danger-inverse);
+}
+
+.tv-out {
+  background: var(--c3-style-basic-bg-neutral-inverse);
+  opacity: 0.55;
+}
+
+.tv-out .tv-heading::before {
+  border-bottom-color: var(--c3-style-basic-bg-neutral-inverse);
+}
+
+.tv-stale {
+  opacity: 0.6;
+  border-style: dashed;
+}
+
+.tv-selected {
+  transform: scale(1.25);
+  box-shadow:
+    0 0 0 3px var(--c3-style-shadow-ring-accent),
+    0 2px 6px rgb(0 0 0 / 40%);
+}
+
+.tv-selected:hover {
+  transform: scale(1.25);
+}
+
+.tv-label {
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+/* A square box centered on the marker, rotated to the bearing; its ::before is the heading arrow at the top. */
+.tv-heading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+  pointer-events: none;
+}
+
+.tv-heading::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 7px solid;
+}
+
+.tv-rot-0 { transform: rotate(0deg); }
+.tv-rot-1 { transform: rotate(22.5deg); }
+.tv-rot-2 { transform: rotate(45deg); }
+.tv-rot-3 { transform: rotate(67.5deg); }
+.tv-rot-4 { transform: rotate(90deg); }
+.tv-rot-5 { transform: rotate(112.5deg); }
+.tv-rot-6 { transform: rotate(135deg); }
+.tv-rot-7 { transform: rotate(157.5deg); }
+.tv-rot-8 { transform: rotate(180deg); }
+.tv-rot-9 { transform: rotate(202.5deg); }
+.tv-rot-10 { transform: rotate(225deg); }
+.tv-rot-11 { transform: rotate(247.5deg); }
+.tv-rot-12 { transform: rotate(270deg); }
+.tv-rot-13 { transform: rotate(292.5deg); }
+.tv-rot-14 { transform: rotate(315deg); }
+.tv-rot-15 { transform: rotate(337.5deg); }
+
+/* Stops are SVG circle markers; CSS rules override Leaflet's presentation attributes. */
+.tv-stop {
+  stroke-width: 2px;
+  fill: var(--c3-style-basic-bg-primary);
+  fill-opacity: 1;
+}
+
+.tv-stop-prt {
+  stroke: var(--c3-style-basic-bg-accent-inverse);
+}
+
+.tv-stop-cmu {
+  stroke: var(--c3-style-basic-bg-danger-inverse);
+}
+
+.tv-stop-hit {
+  cursor: pointer;
+}
+
+.tv-stop-selected {
+  stroke-width: 4px;
+  fill: var(--c3-style-basic-bg-warning-inverse);
+}
+
+.tv-pin {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-warning-inverse);
+  border: 3px solid var(--c3-style-basic-bg-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+}
+
+.tv-me {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-info-inverse);
+  border: 3px solid var(--c3-style-basic-bg-primary);
+  box-shadow: 0 0 0 6px var(--c3-style-shadow-ring-info);
+}
+
+.leaflet-container {
+  font-family: 'Inter Variable', Inter, system-ui, sans-serif;
+  background: var(--app-surface-2);
+}
+
+.leaflet-container:focus-visible {
+  outline: 3px solid var(--app-focus);
+  outline-offset: -3px;
+}
+
+.leaflet-tooltip.tv-tooltip {
+  border-radius: 10px;
+  border: 1px solid var(--app-line);
+  background: var(--app-surface);
+  color: var(--app-ink);
+  font-size: 1rem;
+  padding: 6px 10px;
+  box-shadow: var(--app-shadow-soft);
+}
+
+/* Touch-sized zoom buttons that match the app's rounded controls. */
+.leaflet-touch .leaflet-bar,
+.leaflet-bar {
+  border: 1px solid var(--app-line) !important;
+  border-radius: 14px !important;
+  box-shadow: var(--app-shadow-float) !important;
+  overflow: hidden;
+}
+
+.leaflet-bar a,
+.leaflet-touch .leaflet-bar a {
+  width: 44px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  font-size: 22px !important;
+  background: var(--app-surface) !important;
+  color: var(--app-ink) !important;
+  border-bottom-color: var(--app-line) !important;
+}
+
+.leaflet-bar a:hover {
+  background: var(--app-surface-2) !important;
+}
+
+.leaflet-bar a:focus-visible {
+  outline: 3px solid var(--app-focus);
+  outline-offset: -3px;
+}
+
+.leaflet-control-attribution {
+  font-size: 12px;
+  background: rgb(255 255 255 / 80%) !important;
+  color: #3d4250 !important;
+  border-top-left-radius: 8px;
+}
+
+.dark .leaflet-control-attribution {
+  background: rgb(27 30 38 / 85%) !important;
+  color: var(--app-ink-soft) !important;
+}
+
+.dark .leaflet-control-attribution a {
+  color: var(--app-brand) !important;
+}
+
+/* Map legend swatches used by the "Show on map" switches; they mirror the marker styles above. */
+.tv-legend {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: 700 11px/1 'Inter Variable', Inter, system-ui, sans-serif;
+  color: var(--c3-style-basic-fg-inverse);
+}
+
+.tv-legend-prt {
+  width: 34px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--c3-style-basic-bg-accent-inverse);
+}
+
+.tv-legend-cmu {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-danger-inverse);
+}
+
+.tv-legend-stop {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  border: 2px solid var(--c3-style-basic-bg-accent-inverse);
+  background: var(--app-surface);
+}
+
+.tv-legend-line {
+  width: 30px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-danger-inverse);
+  opacity: 0.7;
+}
+
+.tv-legend-out {
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-neutral-inverse);
+  opacity: 0.55;
+}
+
+/* OSM has no dark tile style; invert the light tiles in dark mode so the map follows the theme. */
+.tv-tiles-dark {
+  filter: invert(1) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+
+/* Trip plan: walking legs are dotted lines; ride legs get a casing so they stand out from route paths. */
+.tv-walk {
+  stroke: var(--c3-style-basic-fg-primary);
+  fill: none;
+}
+
+.tv-ride-casing {
+  stroke: var(--c3-style-basic-bg-primary);
+  fill: none;
+}
+
+.tv-origin {
+  width: 16px;
+  height: 16px;
+  border-radius: 9999px;
+  background: var(--c3-style-basic-bg-primary);
+  border: 4px solid var(--c3-style-basic-fg-primary);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 45%);
+}
+
+/*
+ * The map overlays sit at z-index 1100 above Leaflet's panes and controls; design-system popovers (Combobox, Date
+ * Picker) portal to <body> at z-50, so lift Radix's popper wrapper above the overlays.
+ */
+[data-radix-popper-content-wrapper] {
+  z-index: 1300 !important;
+}

@@ -1,0 +1,65 @@
+/**
+ * An operator-issued service alert (detour, stop closure, reduced service), normalized from the PRT GTFS-Realtime
+ * alert feed by {@link TransitFeed#refreshAlerts}.
+ */
+@db(index=['provider'])
+entity type TransitServiceAlert {
+
+  /**
+   * Operator that issued the alert.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * Short alert headline, for example `Closure: West Lib & Belle Isle`.
+   */
+  @db(length=2000)
+  headline: !string
+
+  /**
+   * Full alert text from the operator.
+   */
+  @db(length=-1)
+  description: string
+
+  /**
+   * GTFS-Realtime cause, for example `CONSTRUCTION` or `UNKNOWN_CAUSE`.
+   */
+  cause: string
+
+  /**
+   * GTFS-Realtime effect, for example `DETOUR` or `REDUCED_SERVICE`.
+   */
+  effect: string
+
+  /**
+   * Operator link with detour maps or details.
+   */
+  @db(length=2000)
+  url: string
+
+  /**
+   * Route codes the operator lists as affected.
+   */
+  routeCodes: [string]
+
+  /**
+   * Operator stop ids the alert lists as affected.
+   */
+  stopIds: [string]
+
+  /**
+   * Start of the active period, when the operator gives one.
+   */
+  activeStart: datetime
+
+  /**
+   * End of the active period, when the operator gives one.
+   */
+  activeEnd: datetime
+
+  /**
+   * Time this application last saw the alert in the operator feed.
+   */
+  fetchedAt: !datetime
+}

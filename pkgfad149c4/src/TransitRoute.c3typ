@@ -1,0 +1,49 @@
+/**
+ * A PRT bus or rail route, or a CMU shuttle route, normalized from PRT GTFS and TripShot into one model.
+ * The id is `<provider prefix>:<operator route id>`, for example `PRT:61C` or `CMU:825c4caf-...`.
+ */
+@db(index=['provider', 'routeCode'])
+entity type TransitRoute {
+
+  /**
+   * Operator that runs the route.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * Rider-facing route code shown on vehicles and maps, for example `61C` or `B Route`.
+   */
+  routeCode: !string
+
+  /**
+   * Rider-facing long name, for example `McKeesport-Homestead` or `B Route- E. Shadyside`.
+   */
+  @db(length=1000)
+  longName: string
+
+  /**
+   * Operator-supplied description of where the route goes.
+   */
+  @db(length=2000)
+  description: string
+
+  /**
+   * Route color from the operator feed as `#rrggbb`, used to draw {@link TransitRoute#paths}.
+   */
+  color: string
+
+  /**
+   * The operator's own identifier: the GTFS `route_id` for PRT or the TripShot `routeId` for CMU.
+   */
+  externalId: !string
+
+  /**
+   * Travel mode such as `bus` or `rail`.
+   */
+  mode: string
+
+  /**
+   * Geometry of the route, one {@link TransitRoute.Path} per direction or main variant.
+   */
+  paths: [TransitRoute.Path](route)
+}

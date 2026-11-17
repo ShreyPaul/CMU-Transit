@@ -1,0 +1,66 @@
+/**
+ * One way to make a trip in a {@link TransitFeed.TripPlan}, with its legs and timing.
+ */
+type TransitFeed.TripPlan.Option {
+
+  /**
+   * Main travel mode.
+   */
+  kind: !string enum TransitFeed.TripPlan.Option.Kind
+
+  /**
+   * One-line description, for example `Walk 6 min · 61C · Walk 3 min`.
+   */
+  summary: !string
+
+  /**
+   * Recommended time to leave the origin.
+   */
+  departAt: !datetime
+
+  /**
+   * Estimated arrival at the destination.
+   */
+  arriveAt: !datetime
+
+  /**
+   * Door-to-door seconds from {@link TransitFeed.TripPlan.Option#departAt} to
+   * {@link TransitFeed.TripPlan.Option#arriveAt}.
+   */
+  totalSeconds: !int
+
+  /**
+   * Seconds spent walking.
+   */
+  walkSeconds: int
+
+  /**
+   * Meters walked.
+   */
+  walkMeters: int
+
+  /**
+   * Seconds spent waiting at the boarding stop, including a two-minute safety buffer.
+   */
+  waitSeconds: int
+
+  /**
+   * Number of transfers between vehicles.
+   */
+  transfers: int
+
+  /**
+   * True when the ride times come from live vehicle tracking rather than the published schedule.
+   */
+  isRealtime: boolean
+
+  /**
+   * Legs in travel order.
+   */
+  legs: [TransitFeed.TripPlan.Leg]
+
+  /**
+   * Active operator alerts on the route this option rides.
+   */
+  alerts: [TransitServiceAlert]
+}

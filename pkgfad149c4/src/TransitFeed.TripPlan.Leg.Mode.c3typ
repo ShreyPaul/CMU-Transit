@@ -1,0 +1,21 @@
+/**
+ * How a {@link TransitFeed.TripPlan.Leg} is traveled.
+ */
+enum type TransitFeed.TripPlan.Leg.Mode {
+  /**
+   * On foot.
+   */
+  WALK
+  /**
+   * On a PRT bus.
+   */
+  BUS
+  /**
+   * On PRT light rail.
+   */
+  RAIL
+  /**
+   * On a CMU shuttle.
+   */
+  SHUTTLE
+}

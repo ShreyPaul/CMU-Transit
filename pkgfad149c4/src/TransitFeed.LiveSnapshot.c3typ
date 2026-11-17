@@ -1,0 +1,20 @@
+/**
+ * Result of {@link TransitFeed#refreshLive}: every tracked vehicle plus the health of the feeds that produced them.
+ */
+type TransitFeed.LiveSnapshot {
+
+  /**
+   * Latest position of each PRT and CMU vehicle currently in the operator feeds.
+   */
+  vehicles: [TransitVehicle]
+
+  /**
+   * The live-feed {@link TransitDataSource} rows, so the UI can show freshness and errors per operator.
+   */
+  sources: [TransitDataSource]
+
+  /**
+   * Server time the snapshot was assembled, for computing data age on the client.
+   */
+  serverTime: !datetime
+}

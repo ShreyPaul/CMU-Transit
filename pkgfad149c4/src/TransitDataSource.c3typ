@@ -1,0 +1,119 @@
+/**
+ * An external API the application depends on, with its access requirements, rate limits, and the outcome of its most
+ * recent call. Feeds update their row on every pull, so the UI can show data freshness and never presents a failed or
+ * unconfigured source as live data.
+ */
+entity type TransitDataSource {
+
+  /**
+   * Name shown in the UI, for example `PRT GTFS-Realtime vehicle positions`.
+   */
+  @db(length=1000)
+  displayName: !string
+
+  /**
+   * Organization that runs the API, for example `Pittsburgh Regional Transit`.
+   */
+  vendor: !string
+
+  /**
+   * What the source supplies.
+   */
+  category: !string enum TransitDataSource.Category
+
+  /**
+   * Base endpoint called, without any credential.
+   */
+  @db(length=2000)
+  endpoint: string
+
+  /**
+   * Lightweight URL {@link TransitDataSource#checkAll} calls to validate the source. A `{key}` placeholder is replaced
+   * with the credential named by {@link TransitDataSource#credentialField}.
+   */
+  @db(length=2000)
+  probeUrl: string
+
+  /**
+   * JSON body for {@link TransitDataSource#probeUrl}. When set, {@link TransitDataSource#checkAll} sends a POST with
+   * this body (for example the Google Routes API `computeRoutes` request); when unset it sends a GET.
+   */
+  @db(length=4000)
+  probeBody: string
+
+  /**
+   * HTTP header that carries the credential (for example `X-Goog-Api-Key`), so the key stays out of the URL. When unset,
+   * the credential only replaces the `{key}` placeholder in {@link TransitDataSource#probeUrl}.
+   */
+  probeKeyHeader: string
+
+  /**
+   * Name of the {@link TransitConfig} secret field the source needs; unset for keyless sources.
+   */
+  credentialField: string
+
+  /**
+   * Health as of the most recent call.
+   */
+  status: !string enum TransitDataSource.Status
+
+  /**
+   * When the application last called the source.
+   */
+  lastAttemptAt: datetime
+
+  /**
+   * When a call to the source last succeeded.
+   */
+  lastSuccessAt: datetime
+
+  /**
+   * Error message from the most recent failed call.
+   */
+  @db(length=4000)
+  lastError: string
+
+  /**
+   * Number of records the most recent successful call returned.
+   */
+  lastRecordCount: int
+
+  /**
+   * Round-trip time of the most recent call in milliseconds.
+   */
+  lastLatencyMs: int
+
+  /**
+   * Shortest interval between two calls the application allows itself, honoring the operator's fair-use policy.
+   */
+  minRefreshSeconds: int
+
+  /**
+   * Operator-published rate limit or usage policy.
+   */
+  @db(length=2000)
+  rateLimitNote: string
+
+  /**
+   * Link to the operator's developer documentation or policy.
+   */
+  @db(length=2000)
+  docsUrl: string
+
+  /**
+   * Development phase (1-4) that first uses the source.
+   */
+  phase: int
+
+  /**
+   * What the source is used for and any known limitations.
+   */
+  @db(length=4000)
+  notes: string
+
+  /**
+   * Calls every source once (or marks it NOT_CONFIGURED when its credential is missing), records the outcome on each
+   * row, and returns all sources. Use it from the Data Sources page to validate availability on demand.
+   */
+  checkAll: function(): [TransitDataSource] js-server
+}

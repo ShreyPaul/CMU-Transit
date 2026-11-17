@@ -1,0 +1,30 @@
+/**
+ * Counts written by a network load ({@link TransitFeed#loadPrtNetwork}, {@link TransitFeed#loadTripShotNetwork}).
+ */
+type TransitFeed.LoadResult {
+
+  /**
+   * {@link TransitRoute} rows written.
+   */
+  routes: int
+
+  /**
+   * {@link TransitStop} rows written.
+   */
+  stops: int
+
+  /**
+   * {@link TransitRoute.Path} rows written.
+   */
+  paths: int
+
+  /**
+   * {@link TransitRoute.Trip} rows written.
+   */
+  trips: int
+
+  /**
+   * Wall-clock time of the load in milliseconds.
+   */
+  durationMs: int
+}

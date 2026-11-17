@@ -1,0 +1,50 @@
+/**
+ * One predicted arrival at a stop, part of {@link TransitFeed.StopArrivals}.
+ */
+type TransitFeed.Arrival {
+
+  /**
+   * Operator running the trip.
+   */
+  provider: !string enum TransitProvider
+
+  /**
+   * Rider-facing route code.
+   */
+  routeCode: string
+
+  /**
+   * Route long name.
+   */
+  routeName: string
+
+  /**
+   * Route color as `#rrggbb`.
+   */
+  routeColor: string
+
+  /**
+   * Destination sign of the trip.
+   */
+  destination: string
+
+  /**
+   * {@link TransitVehicle} id assigned to the trip, when the operator reports one.
+   */
+  vehicleId: string
+
+  /**
+   * Fleet number or shuttle name of the assigned vehicle.
+   */
+  vehicleLabel: string
+
+  /**
+   * Predicted arrival time.
+   */
+  eta: !datetime
+
+  /**
+   * True when the prediction comes from live vehicle tracking; false when it is the published schedule.
+   */
+  isRealtime: boolean
+}

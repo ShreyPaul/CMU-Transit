@@ -1,0 +1,14 @@
+/**
+ * The operator a {@link TransitRoute}, {@link TransitStop}, {@link TransitVehicle}, or {@link TransitServiceAlert}
+ * comes from. The unified data model keeps PRT and CMU shuttle records side by side, tagged by this value.
+ */
+enum type TransitProvider {
+  /**
+   * Pittsburgh Regional Transit buses and light rail, read from the public PRT GTFS and GTFS-Realtime feeds.
+   */
+  PRT
+  /**
+   * Carnegie Mellon University shuttles, read from the public TripShot endpoints at cmu.tripshot.com.
+   */
+  CMU_SHUTTLE
+}

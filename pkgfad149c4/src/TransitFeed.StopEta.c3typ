@@ -1,0 +1,35 @@
+/**
+ * One upcoming stop of a vehicle with its predicted arrival, part of {@link TransitFeed.VehicleDetail}.
+ */
+type TransitFeed.StopEta {
+
+  /**
+   * {@link TransitStop} id, when the stop is in the loaded network.
+   */
+  stopId: string
+
+  /**
+   * Stop name.
+   */
+  stopName: !string
+
+  /**
+   * Stop latitude, when known.
+   */
+  latitude: double
+
+  /**
+   * Stop longitude, when known.
+   */
+  longitude: double
+
+  /**
+   * Operator-predicted arrival (or departure for the first stop).
+   */
+  eta: datetime
+
+  /**
+   * True when the prediction comes from live vehicle tracking; false when it is the published schedule.
+   */
+  isRealtime: boolean
+}
